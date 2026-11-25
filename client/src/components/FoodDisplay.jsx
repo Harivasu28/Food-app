@@ -5,7 +5,8 @@ import FoodItem from './FoodItem'
 
 const FoodDisplay = ({ category }) => {
 
-  const { food_list } = useContext(StoreContext)
+  const { food_list, searchQuery } = useContext(StoreContext)
+  const normalizedSearch = searchQuery.trim().toLowerCase()
 
   return (
     <div className='food-display' id='food-display'>
@@ -14,7 +15,10 @@ const FoodDisplay = ({ category }) => {
       <div className="food-display-list">
         {food_list
           .filter((item) =>
-            category === 'All' || category === item.category
+            (category === 'All' || category === item.category) &&
+            (!normalizedSearch ||
+              item.name.toLowerCase().includes(normalizedSearch) ||
+              item.description.toLowerCase().includes(normalizedSearch))
           )
           .map((item, index) => (
             <FoodItem

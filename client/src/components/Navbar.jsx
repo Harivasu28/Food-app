@@ -7,8 +7,21 @@ import { StoreContext } from '../Context/StoreContext'
 
 const Navbar = ({ setShowLogin }) => {
     const [menu, setMenu] = useState('home')
-    const { getTotalCartAmount } = useContext(StoreContext)
+    const [showSearch, setShowSearch] = useState(false)
+    const {
+        getCartItemCount,
+        searchQuery,
+        setSearchQuery
+    } = useContext(StoreContext)
     const navigate = useNavigate()
+    const cartItemCount = getCartItemCount()
+
+    const openSearch = () => {
+        setShowSearch((previous) => !previous)
+        if (window.location.pathname !== '/') {
+            navigate('/')
+        }
+    }
 
     return (
         <div className="navbar">
@@ -54,15 +67,35 @@ const Navbar = ({ setShowLogin }) => {
             </ul>
 
             <div className="navbar-right">
-                <img src={assets.search_icon} alt="Search" />
+                {showSearch && (
+                    <input
+                        className="navbar-search-input"
+                        type="search"
+                        value={searchQuery}
+                        onChange={(event) => setSearchQuery(event.target.value)}
+                        placeholder="Search food..."
+                        autoFocus
+                        aria-label="Search food"
+                    />
+                )}
+                <button
+                    type="button"
+                    className="navbar-search-button"
+                    onClick={openSearch}
+                    aria-label={showSearch ? 'Close search' : 'Open search'}
+                >
+                    <img src={assets.search_icon} alt="" />
+                </button>
 
                 <div className="navbar-search-icon">
                     <Link to="/cart">
                         <img src={assets.basket_icon} alt="Cart" />
                     </Link>
 
-                    {getTotalCartAmount() > 0 && (
-                        <div className="dot"></div>
+                    {cartItemCount > 0 && (
+                        <div className="cart-count" aria-label={`${cartItemCount} items in cart`}>
+                            {cartItemCount}
+                        </div>
                     )}
                 </div>
 

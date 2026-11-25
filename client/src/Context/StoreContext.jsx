@@ -6,6 +6,7 @@ export const StoreContext = createContext(null)
 
 const StoreContextProvider = (props) => {
     const [cartItems, setCartItems] = useState({})
+    const [searchQuery, setSearchQuery] = useState('')
     const addToCart = (itemId) => {
         setCartItems((prev) => ({
             ...prev,
@@ -42,13 +43,22 @@ const StoreContextProvider = (props) => {
         return totalAmount
     }
 
+    const getCartItemCount = () =>
+        Object.values(cartItems).reduce(
+            (total, quantity) => total + (quantity > 0 ? quantity : 0),
+            0
+        )
+
     const contextValue = {
         food_list,
         cartItems,
         setCartItems,
+        searchQuery,
+        setSearchQuery,
         addToCart,
         removeFromCart,
-        getTotalCartAmount
+        getTotalCartAmount,
+        getCartItemCount
     }
 
     useEffect(() => {
